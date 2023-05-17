@@ -1,0 +1,4 @@
+int
+x; int soma;
+x= 2 + 3; // aqui eh um comentario
+soma = 3*8
