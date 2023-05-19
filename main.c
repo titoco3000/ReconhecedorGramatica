@@ -31,10 +31,11 @@ Depois de extendida para levar em conta comentarios e intervalos e fatorada, fic
 <fator> ::= <numero> | '(' (<intervalo> | λ) <expr> (<intervalo> | λ) ')'
 <variável> ::= <letra> ( <variável> | λ )
 <numero> ::= <digito> ( <número> | λ )
-<letra> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y| z
+<letra> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z
 <digito> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 <intervalo> ::= ( // {qualquer exceto \n} \n | <espaço> | <tab> | \n ) (<intervalo> | λ)
 
+Argumentos: nome do arquivo a ser analisado
 */
 
 #include <stdio.h>
@@ -240,7 +241,7 @@ bool numero(){
     return false;
 }
 
-// <letra> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y| z
+// <letra> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z
 bool letra(){
     char s = buffer[pos++];
     if(s>='a'&&s<='z')
