@@ -19,7 +19,7 @@ Reconhecece a linguagem definida pela seguinte gramática:
 <letra> ::= a | b | c | d | e | f | g | h | i | j | k | l | m | n | o | p | q | r | s | t | u | v | w | x | y | z
 <digito> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
-Depois de extendida para levar em conta comentarios e intervalos e fatorada, fica:
+Que depois de extendida para levar em conta comentarios e intervalos e fatorada, fica:
 
 <programa> ::= ( <intervalo> | λ) <declarações> (<intervalo> | λ) <comandos>(<intervalo> | λ) EOF
 <declarações> ::= <declaração> { (<intervalo> | λ) <declaração> }
@@ -35,7 +35,7 @@ Depois de extendida para levar em conta comentarios e intervalos e fatorada, fic
 <digito> ::= 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 <intervalo> ::= ( // {qualquer exceto \n} \n | <espaço> | <tab> | \n ) (<intervalo> | λ)
 
-Argumentos: nome do arquivo a ser analisado
+Argumentos: nome do arquivo a ser analisado (opcional, na falta dele é analisado o arquivo "teste.txt")
 */
 
 #include <stdio.h>
@@ -282,15 +282,13 @@ bool intervalo(){
 }
 
 int main(int argc, char *argv[ ]){
-    FILE *arquivo;
-    if(argc>1)
-        //abre o arquivo
-        arquivo = fopen(argv[1],"r");
-    else
-        arquivo = fopen("teste.txt","r");
+    char *endereco = (argc>1 ? argv[1] : "teste.txt");
+    
+    //abre o arquivo
+    FILE *arquivo = fopen( endereco, "r");
 
     if(arquivo == NULL){
-        fprintf(stderr, "Falha ao abrir arquivo: %s\n",argv[1]);
+        fprintf(stderr, "Falha ao abrir arquivo: %s\n",endereco);
         return 1;
     }
 
