@@ -21,7 +21,7 @@ Reconhecece a linguagem definida pela seguinte gramática:
 
 Depois de extendida para levar em conta comentarios e intervalos e fatorada, fica:
 
-<programa> ::= ( <intervalo> | λ) <declarações> (<intervalo> | λ) <comandos>(<intervalo> | λ)
+<programa> ::= ( <intervalo> | λ) <declarações> (<intervalo> | λ) <comandos>(<intervalo> | λ) EOF
 <declarações> ::= <declaração> { (<intervalo> | λ) <declaração> }
 <declaração> ::= int <intervalo> <variavel> (<intervalo> | λ) ;
 <comandos> ::= <atribuição> { (<intervalo> | λ) ; (<intervalo> | λ) <atribuição>}
@@ -61,14 +61,15 @@ bool digito();
 bool digito();
 bool intervalo();
 
-// <programa> ::= ( <intervalo> | λ) <declarações> (<intervalo> | λ) <comandos>(<intervalo> | λ)
+// <programa> ::= ( <intervalo> | λ) <declarações> (<intervalo> | λ) <comandos>(<intervalo> | λ) EOF
 bool programa(){
     intervalo();
     if(declaracoes()){
         intervalo();
         if(comandos()){
             intervalo();
-            return true;
+            if(buffer[pos++] == '\0')
+                return true;
         }
     }
     return false;
@@ -281,39 +282,38 @@ bool intervalo(){
 }
 
 int main(int argc, char *argv[ ]){
-    if(argc>1){
+    FILE *arquivo;
+    if(argc>1)
         //abre o arquivo
-        FILE* arquivo = fopen(argv[1],"r");
-        if(arquivo == NULL){
-            fprintf(stderr, "Falha ao abrir arquivo: %s\n",argv[1]);
-            return 2;
-        }
+        arquivo = fopen(argv[1],"r");
+    else
+        arquivo = fopen("teste.txt","r");
 
-        //obtem tamanho do arquivo
-        fseek(arquivo, 0, SEEK_END);
-        long tamanho_arquivo = ftell(arquivo);
-        fseek(arquivo, 0, SEEK_SET);
-
-        //aloca buffer para conteudo do arquivo
-        buffer = (char*)malloc(tamanho_arquivo);
-        //copia o conteudo
-        fread(buffer, sizeof(char), tamanho_arquivo, arquivo);
-        //libera o arquivo
-        fclose(arquivo);
-
-        if(programa()){
-            printf("Entrada aceita sem erros.\n%d linhas analisadas\n",linha_atual);
-        }
-        else{
-            printf("Falha na derivacao\nErro na linha %d.\n",linha_atual);
-        }
-
-        //libera memória alocada
-        free(buffer);
-        return 0;
-    }
-    else{
-        fprintf(stderr, "Argumentos insuficientes, precisa receber o nome do arquivo a ser verificado");
+    if(arquivo == NULL){
+        fprintf(stderr, "Falha ao abrir arquivo: %s\n",argv[1]);
         return 1;
     }
+
+    //obtem tamanho do arquivo
+    fseek(arquivo, 0, SEEK_END);
+    long tamanho_arquivo = ftell(arquivo);
+    fseek(arquivo, 0, SEEK_SET);
+
+    //aloca buffer para conteudo do arquivo
+    buffer = (char*)malloc(tamanho_arquivo);
+    //copia o conteudo
+    fread(buffer, sizeof(char), tamanho_arquivo, arquivo);
+    //libera o arquivo
+    fclose(arquivo);
+
+    if(programa()){
+        printf("Entrada aceita sem erros.\n%d linhas analisadas\n",linha_atual);
+    }
+    else{
+        printf("Falha na derivacao\nErro na linha %d.\n",linha_atual);
+    }
+
+    //libera memória alocada
+    free(buffer);
+    return 0;
 }
